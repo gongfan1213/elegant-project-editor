@@ -1,5 +1,5 @@
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 
 interface ResizablePanelsProps {
   leftPanel: React.ReactNode;
@@ -49,7 +49,7 @@ const ResizablePanels = ({ leftPanel, centerPanel, rightPanel }: ResizablePanels
     document.body.style.cursor = 'default';
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
     return () => {
