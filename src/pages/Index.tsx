@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import Header from "@/components/Header";
 
 const Index = () => {
@@ -69,7 +70,7 @@ const Index = () => {
         {/* Projects Grid */}
         <section>
           <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
-            精选内容
+            用Nova创作精彩内容
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -77,13 +78,13 @@ const Index = () => {
               <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer border-0 shadow-md">
                 <CardHeader>
                   <div className="flex items-center justify-between mb-2">
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${project.color}`}>
+                    <CardTitle className="text-xl font-semibold text-gray-900 flex-1">
+                      {project.title}
+                    </CardTitle>
+                    <Badge className={`px-3 py-1 text-sm font-medium ${project.color} ml-4`}>
                       {project.category}
-                    </span>
+                    </Badge>
                   </div>
-                  <CardTitle className="text-xl font-semibold text-gray-900">
-                    {project.title}
-                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600 leading-relaxed">

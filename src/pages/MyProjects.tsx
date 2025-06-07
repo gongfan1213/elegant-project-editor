@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import Header from "@/components/Header";
 import NewProjectDialog from "@/components/NewProjectDialog";
 import ProjectManageDialog from "@/components/ProjectManageDialog";
+import NewTagDialog from "@/components/NewTagDialog";
 
 const MyProjects = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -16,7 +17,7 @@ const MyProjects = () => {
   const [editingTitle, setEditingTitle] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
 
-  const filters = ["全部", "科技", "传媒", "灯", "生活方式", "美妆", "旅行"];
+  const [tags, setTags] = useState(["全部", "科技", "传媒", "灯", "生活方式", "美妆", "旅行"]);
   
   const [projects, setProjects] = useState([
     {
@@ -64,13 +65,13 @@ const MyProjects = () => {
     return matchesSearch && matchesFilter;
   });
 
-  const handleAddProject = (title: string, description: string) => {
+  const handleAddProject = (title: string, description: string, category: string) => {
     const newProject = {
       id: Date.now().toString(),
       title,
       description,
       status: "草稿",
-      category: "传媒",
+      category,
       lastModified: new Date().toISOString().split('T')[0],
       statusColor: "bg-yellow-100 text-yellow-800"
     };
@@ -107,6 +108,12 @@ const MyProjects = () => {
     }
   };
 
+  const handleAddTag = (newTag: string) => {
+    if (!tags.includes(newTag)) {
+      setTags([...tags, newTag]);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -128,7 +135,7 @@ const MyProjects = () => {
             <div className="flex items-center space-x-2">
               <span className="text-sm font-medium text-gray-700">标签分类</span>
               <div className="flex flex-wrap gap-2">
-                {filters.map((filter) => (
+                {tags.map((filter) => (
                   <Button
                     key={filter}
                     variant={activeFilter === filter ? "default" : "outline"}
@@ -143,14 +150,12 @@ const MyProjects = () => {
                     {filter}
                   </Button>
                 ))}
-                <Button variant="outline" size="sm" className="border-dashed border-gray-300 text-gray-500">
-                  + 新增标签
-                </Button>
+                <NewTagDialog onAddTag={handleAddTag} />
               </div>
             </div>
             
             <div className="flex space-x-3">
-              <NewProjectDialog onAddProject={handleAddProject} />
+              <NewProjectDialog onAddProject={handleAddProject} availableTags={tags} onAddTag={handleAddTag} />
               <ProjectManageDialog projects={projects} onDeleteProjects={handleDeleteProjects} />
             </div>
           </div>
@@ -190,25 +195,27 @@ const MyProjects = () => {
                 </p>
                 
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500">最后修改: {project.lastModified}</span>
-                  <Badge variant="outline" className="text-gray-600 border-gray-300">
+                  <span className="text-xs text-gray-500 group-hover:opacity-0 transition-opacity">
+                    最后修改: {project.lastModified}
+                  </span>
+                  <Badge variant="outline" className="text-gray-600 border-gray-300 group-hover:opacity-0 transition-opacity">
                     {project.category}
                   </Badge>
-                </div>
-                
-                <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity mt-3">
-                  <Link to={`/editor/${project.id}`} className="flex-1">
-                    <Button size="sm" variant="ghost" className="w-full text-gray-500 hover:text-blue-600">
-                      <Edit3 size={14} className="mr-1" />
-                      编辑
+                  
+                  <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity absolute">
+                    <Link to={`/editor/${project.id}`}>
+                      <Button size="sm" variant="ghost" className="text-gray-500 hover:text-blue-600">
+                        <Edit3 size={14} className="mr-1" />
+                        编辑
+                      </Button>
+                    </Link>
+                    <Button size="sm" variant="ghost" className="text-gray-500 hover:text-green-600">
+                      <Copy size={14} />
                     </Button>
-                  </Link>
-                  <Button size="sm" variant="ghost" className="text-gray-500 hover:text-green-600">
-                    <Copy size={14} />
-                  </Button>
-                  <Button size="sm" variant="ghost" className="text-gray-500 hover:text-red-600">
-                    <Trash2 size={14} />
-                  </Button>
+                    <Button size="sm" variant="ghost" className="text-gray-500 hover:text-red-600">
+                      <Trash2 size={14} />
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
