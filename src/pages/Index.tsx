@@ -1,51 +1,36 @@
 
 import { useState } from "react";
-import { ArrowRight, Star, TrendingUp, Users, Zap } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Header from "@/components/Header";
 
 const Index = () => {
   const [inputValue, setInputValue] = useState("");
 
-  const categories = [
-    { name: "美妆", rating: 8.5, icon: Star, color: "text-yellow-500" },
-    { name: "科技", rating: 12.3, icon: Zap, color: "text-blue-500" },
-    { name: "旅行", rating: 6.7, icon: TrendingUp, color: "text-green-500" },
-    { name: "职场", rating: 9.8, icon: Users, color: "text-purple-500" },
-  ];
-
   const projects = [
     {
       title: "爆款美妆种草文案",
-      description: "通过AI生成的美妆产品推荐文案，获得10w+点赞",
-      views: "10.2w",
-      interactive: true,
+      content: "通过AI生成的美妆产品推荐文案，专业分析产品成分和使用效果，结合个人体验分享，打造真实可信的种草内容。从产品选择到使用心得，每一个细节都经过精心打磨，让读者能够真切感受到产品的魅力。无论是日常妆容还是特殊场合，都能找到最适合的美妆方案。",
       category: "美妆",
       color: "text-yellow-600 bg-yellow-50"
     },
     {
       title: "科技产品评测",
-      description: "深度AI生成的手机评测内容，专业且吸引人",
-      views: "15.6w",
-      interactive: true,
+      content: "深度AI生成的手机评测内容，从外观设计到性能测试，从拍照效果到续航表现，全方位解析最新科技产品。采用专业的测试方法和客观的评价标准，为消费者提供最有价值的购买参考。不仅关注产品本身，更从用户实际使用场景出发，给出最贴心的建议。",
       category: "科技",
       color: "text-blue-600 bg-blue-50"
     },
     {
       title: "旅行攻略分享",
-      description: "AI助力创作的三亚旅行攻略，实用性极强",
-      views: "8.9w",
-      interactive: true,
+      content: "AI助力创作的三亚旅行攻略，从行程规划到住宿推荐，从美食探索到景点打卡，每一个环节都经过精心安排。结合当地文化特色和季节变化，为游客提供最实用的旅行指南。不仅有详细的路线规划，更有贴心的旅行小贴士，让每一次旅行都成为难忘的回忆。",
       category: "旅行",
       color: "text-green-600 bg-green-50"
     },
     {
       title: "职场干货分享",
-      description: "AI生成的职场成长建议，收藏量破万",
-      views: "12.4w",
-      interactive: true,
+      content: "AI生成的职场成长建议，涵盖求职技巧、工作方法、人际关系、职业规划等多个方面。从新人入职到资深员工晋升，每个职场阶段都有对应的成长策略。结合真实案例和实用工具，帮助职场人士提升工作效率，实现职业目标，在竞争激烈的职场中脱颖而出。",
       category: "职场",
       color: "text-purple-600 bg-purple-50"
     },
@@ -81,31 +66,12 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Categories Section */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
-            用Nova开始创作
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {categories.map((category) => (
-              <Card key={category.name} className="hover:shadow-lg transition-shadow cursor-pointer border-0 shadow-md">
-                <CardHeader className="text-center pb-4">
-                  <div className="flex items-center justify-center mb-2">
-                    <category.icon className={`w-8 h-8 ${category.color}`} />
-                    <span className="ml-2 text-sm font-medium text-gray-600">
-                      {category.rating}w
-                    </span>
-                  </div>
-                  <CardTitle className="text-xl font-semibold">{category.name}</CardTitle>
-                </CardHeader>
-              </Card>
-            ))}
-          </div>
-        </section>
-
         {/* Projects Grid */}
         <section>
+          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
+            精选内容
+          </h2>
+          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {projects.map((project, index) => (
               <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer border-0 shadow-md">
@@ -114,25 +80,15 @@ const Index = () => {
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${project.color}`}>
                       {project.category}
                     </span>
-                    <div className="flex items-center space-x-4 text-sm text-gray-500">
-                      <span className="flex items-center">
-                        <TrendingUp size={14} className="mr-1" />
-                        {project.views}
-                      </span>
-                      <span className="flex items-center">
-                        <Users size={14} className="mr-1" />
-                        互动
-                      </span>
-                    </div>
                   </div>
                   <CardTitle className="text-xl font-semibold text-gray-900">
                     {project.title}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-gray-600 leading-relaxed">
-                    {project.description}
-                  </CardDescription>
+                  <p className="text-gray-600 leading-relaxed">
+                    {project.content}
+                  </p>
                 </CardContent>
               </Card>
             ))}

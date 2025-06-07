@@ -1,12 +1,14 @@
 
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Copy, Save, Bot, Download } from "lucide-react";
+import { ArrowLeft, Save, Download, Copy, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import ResizablePanels from "@/components/ResizablePanels";
+import ImportUrlDialog from "@/components/ImportUrlDialog";
 
 const Editor = () => {
   const { id } = useParams();
@@ -35,38 +37,150 @@ const Editor = () => {
 
 #iPhone15Pro #科技评测 #数码博主 #手机推荐`);
 
-  const suggestions = [
-    {
-      title: "iPhone 15 Pro深度评测",
-      preview: "📱 iPhone 15 Pro深度评测来啦！今天给大家带来最新的iPhone 15 Pro全面评测..."
-    },
-    {
-      title: "iPhone 15 Pro上手体验", 
-      preview: "🔥 拿到iPhone 15 Pro的第一时间，就忍不住要分享给大家这个使用体验..."
-    },
-    {
-      title: "iPhone 15 Pro vs iPhone 14 Pro对比",
-      preview: "⚡ 很多朋友问iPhone 15 Pro相比14 Pro到底提升在哪里，今天就来..."
-    }
-  ];
-
-  const aiChat = [
+  const [chatInput, setChatInput] = useState("");
+  const [aiChat, setAiChat] = useState([
     {
       type: "ai",
-      message: "嗨，我化身一下iPhone 15 Pro的评测文案，让它更加吸引人",
+      message: "嗨，我来帮你优化这篇iPhone 15 Pro的评测文案，让它更加吸引人",
       time: "14:25"
     },
     {
       type: "user", 
-      message: "我来帮你优化这篇iPhone 15 Pro评测文案，让它更具吸引力和可读性，我会优化标题、结构和内容细节方面进行优化。",
+      message: "我来帮你优化这篇iPhone 15 Pro评测文案，让它更具吸引力和可读性，我会从标题、结构和内容细节方面进行优化。",
       time: "14:26"
     },
     {
       type: "ai",
-      message: "可以加一些更具体的数据对比吗？",
+      message: "可以加一些更具体的数据对比吗？比如电池续航的具体小时数，相机的样张对比等。",
       time: "14:28"
     }
+  ]);
+
+  const suggestions = [
+    {
+      title: "iPhone 15 Pro深度评测",
+      preview: "📱 iPhone 15 Pro深度评测来啦！今天给大家带来最新的iPhone 15 Pro全面评测...",
+      time: "2024-06-06 14:30"
+    },
+    {
+      title: "iPhone 15 Pro上手体验", 
+      preview: "🔥 拿到iPhone 15 Pro的第一时间，就忍不住要分享给大家这个使用体验...",
+      time: "2024-06-05 16:20"
+    },
+    {
+      title: "iPhone 15 Pro vs iPhone 14 Pro对比",
+      preview: "⚡ 很多朋友问iPhone 15 Pro相比14 Pro到底提升在哪里，今天就来...",
+      time: "2024-06-04 10:15"
+    }
   ];
+
+  const handleImportContent = (importedTitle: string, importedContent: string) => {
+    setTitle(importedTitle);
+    setContent(importedContent);
+  };
+
+  const handleSendMessage = () => {
+    if (chatInput.trim()) {
+      const newMessage = {
+        type: "user" as const,
+        message: chatInput,
+        time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+      };
+      setAiChat([...aiChat, newMessage]);
+      setChatInput("");
+    }
+  };
+
+  const leftPanel = (
+    <div className="p-4 h-full flex flex-col">
+      <div className="mb-4">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-semibold text-gray-900">文本草稿</h3>
+          <ImportUrlDialog onImport={handleImportContent} />
+        </div>
+        <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white mb-4">
+          <Download size={16} className="mr-2" />
+          新建草稿
+        </Button>
+      </div>
+
+      <div className="flex-1 overflow-y-auto space-y-3">
+        {suggestions.map((suggestion, index) => (
+          <Card key={index} className="cursor-pointer hover:shadow-md transition-shadow border-0 shadow-sm group">
+            <CardContent className="p-3">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-medium text-sm text-gray-900 line-clamp-1 flex-1">{suggestion.title}</h4>
+                <div className="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
+                    <Copy size={12} />
+                  </Button>
+                  <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
+                    <Trash2 size={12} />
+                  </Button>
+                </div>
+              </div>
+              <p className="text-xs text-gray-600 line-clamp-2 mb-2">{suggestion.preview}</p>
+              <span className="text-xs text-gray-400">{suggestion.time}</span>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+
+  const centerPanel = (
+    <div className="p-6 h-full flex flex-col">
+      <div className="mb-6">
+        <Input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="text-2xl font-bold border-0 p-0 focus:ring-0 text-gray-900"
+          placeholder="输入标题..."
+        />
+      </div>
+      
+      <Separator className="mb-6" />
+      
+      <Textarea
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        className="flex-1 border-0 p-0 focus:ring-0 resize-none text-gray-700 leading-relaxed"
+        placeholder="开始写作..."
+      />
+    </div>
+  );
+
+  const rightPanel = (
+    <div className="flex flex-col h-full">
+      <div className="p-4 border-b border-gray-200">
+        <h3 className="font-semibold text-gray-900">AI助手</h3>
+      </div>
+      
+      <div className="flex-1 p-4 space-y-4 overflow-y-auto">
+        {aiChat.map((message, index) => (
+          <div key={index} className={`${message.type === 'ai' ? 'bg-blue-50' : 'bg-gray-50'} rounded-lg p-3`}>
+            <p className="text-sm text-gray-700 leading-relaxed">{message.message}</p>
+            <span className="text-xs text-gray-500 mt-2 block">{message.time}</span>
+          </div>
+        ))}
+      </div>
+      
+      <div className="p-4 border-t border-gray-200">
+        <div className="flex space-x-2">
+          <Input 
+            placeholder="与AI对话..." 
+            className="flex-1" 
+            value={chatInput}
+            onChange={(e) => setChatInput(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+          />
+          <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSendMessage}>
+            发送
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -89,92 +203,21 @@ const Editor = () => {
           </div>
           
           <div className="flex items-center space-x-3">
-            <Button variant="ghost" size="sm" className="text-gray-600">
-              <Copy size={16} className="mr-2" />
-              复制
-            </Button>
             <Button className="bg-blue-600 hover:bg-blue-700 text-white">
               <Save size={16} className="mr-2" />
               保存
-            </Button>
-            <Button variant="outline" className="border-blue-200 text-blue-600 hover:bg-blue-50">
-              <Bot size={16} className="mr-2" />
-              AI助手
             </Button>
           </div>
         </div>
       </header>
 
       <div className="max-w-7xl mx-auto px-6 py-6">
-        <div className="grid grid-cols-12 gap-6 h-[calc(100vh-140px)]">
-          {/* Left Sidebar - Document List */}
-          <div className="col-span-3 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-            <div className="mb-4">
-              <h3 className="font-semibold text-gray-900 mb-3">文本草稿</h3>
-              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white mb-4">
-                <Download size={16} className="mr-2" />
-                新建草稿
-              </Button>
-            </div>
-
-            <div className="space-y-3">
-              {suggestions.map((suggestion, index) => (
-                <Card key={index} className="cursor-pointer hover:shadow-md transition-shadow border-0 shadow-sm">
-                  <CardContent className="p-3">
-                    <h4 className="font-medium text-sm text-gray-900 mb-1">{suggestion.title}</h4>
-                    <p className="text-xs text-gray-600 line-clamp-3">{suggestion.preview}</p>
-                    <span className="text-xs text-gray-400 mt-2 block">2024-06-06 14:30</span>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-
-          {/* Main Editor */}
-          <div className="col-span-6 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="mb-6">
-              <Input
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="text-2xl font-bold border-0 p-0 focus:ring-0 text-gray-900"
-                placeholder="输入标题..."
-              />
-            </div>
-            
-            <Separator className="mb-6" />
-            
-            <Textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              className="min-h-[500px] border-0 p-0 focus:ring-0 resize-none text-gray-700 leading-relaxed"
-              placeholder="开始写作..."
-            />
-          </div>
-
-          {/* Right Sidebar - AI Chat */}
-          <div className="col-span-3 bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col">
-            <div className="p-4 border-b border-gray-200">
-              <h3 className="font-semibold text-gray-900">AI助手</h3>
-            </div>
-            
-            <div className="flex-1 p-4 space-y-4 overflow-y-auto">
-              {aiChat.map((message, index) => (
-                <div key={index} className={`${message.type === 'ai' ? 'bg-blue-50' : 'bg-gray-50'} rounded-lg p-3`}>
-                  <p className="text-sm text-gray-700 leading-relaxed">{message.message}</p>
-                  <span className="text-xs text-gray-500 mt-2 block">{message.time}</span>
-                </div>
-              ))}
-            </div>
-            
-            <div className="p-4 border-t border-gray-200">
-              <div className="flex space-x-2">
-                <Input placeholder="与AI对话..." className="flex-1" />
-                <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
-                  发送
-                </Button>
-              </div>
-            </div>
-          </div>
+        <div className="h-[calc(100vh-140px)]">
+          <ResizablePanels
+            leftPanel={leftPanel}
+            centerPanel={centerPanel}
+            rightPanel={rightPanel}
+          />
         </div>
       </div>
     </div>

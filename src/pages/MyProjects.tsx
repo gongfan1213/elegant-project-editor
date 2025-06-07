@@ -1,20 +1,24 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, Plus, Edit3, Copy, Trash2 } from "lucide-react";
+import { Search, Edit3, Copy, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Header from "@/components/Header";
+import NewProjectDialog from "@/components/NewProjectDialog";
+import ProjectManageDialog from "@/components/ProjectManageDialog";
 
 const MyProjects = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("全部");
+  const [editingTitle, setEditingTitle] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState("");
 
   const filters = ["全部", "科技", "传媒", "灯", "生活方式", "美妆", "旅行"];
   
-  const projects = [
+  const [projects, setProjects] = useState([
     {
       id: "1",
       title: "iPhone 15 Pro深度评测",
@@ -51,7 +55,7 @@ const MyProjects = () => {
       lastModified: "2024-06-03",
       statusColor: "bg-green-100 text-green-800"
     }
-  ];
+  ]);
 
   const filteredProjects = projects.filter(project => {
     const matchesSearch = project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -59,6 +63,49 @@ const MyProjects = () => {
     const matchesFilter = activeFilter === "全部" || project.category === activeFilter;
     return matchesSearch && matchesFilter;
   });
+
+  const handleAddProject = (title: string, description: string) => {
+    const newProject = {
+      id: Date.now().toString(),
+      title,
+      description,
+      status: "草稿",
+      category: "传媒",
+      lastModified: new Date().toISOString().split('T')[0],
+      statusColor: "bg-yellow-100 text-yellow-800"
+    };
+    setProjects([newProject, ...projects]);
+  };
+
+  const handleDeleteProjects = (projectIds: string[]) => {
+    setProjects(prev => prev.filter(project => !projectIds.includes(project.id)));
+  };
+
+  const handleTitleDoubleClick = (projectId: string, currentTitle: string) => {
+    setEditingTitle(projectId);
+    setEditTitle(currentTitle);
+  };
+
+  const handleTitleSave = () => {
+    if (editingTitle && editTitle.trim()) {
+      setProjects(prev => prev.map(project => 
+        project.id === editingTitle 
+          ? { ...project, title: editTitle.trim() }
+          : project
+      ));
+    }
+    setEditingTitle(null);
+    setEditTitle("");
+  };
+
+  const handleTitleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleTitleSave();
+    } else if (e.key === 'Escape') {
+      setEditingTitle(null);
+      setEditTitle("");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -103,13 +150,8 @@ const MyProjects = () => {
             </div>
             
             <div className="flex space-x-3">
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                <Plus size={16} className="mr-2" />
-                新增项目
-              </Button>
-              <Button variant="outline" className="border-gray-300 text-gray-700">
-                管理项目
-              </Button>
+              <NewProjectDialog onAddProject={handleAddProject} />
+              <ProjectManageDialog projects={projects} onDeleteProjects={handleDeleteProjects} />
             </div>
           </div>
         </div>
@@ -120,38 +162,53 @@ const MyProjects = () => {
             <Card key={project.id} className="hover:shadow-lg transition-all duration-200 cursor-pointer group border-0 shadow-md">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between mb-3">
-                  <Badge className={`${project.statusColor} border-0`}>
+                  {editingTitle === project.id ? (
+                    <Input
+                      value={editTitle}
+                      onChange={(e) => setEditTitle(e.target.value)}
+                      onBlur={handleTitleSave}
+                      onKeyDown={handleTitleKeyPress}
+                      className="text-lg font-semibold"
+                      autoFocus
+                    />
+                  ) : (
+                    <CardTitle 
+                      className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors flex-1"
+                      onDoubleClick={() => handleTitleDoubleClick(project.id, project.title)}
+                    >
+                      {project.title}
+                    </CardTitle>
+                  )}
+                  <Badge className={`${project.statusColor} border-0 ml-2`}>
                     {project.status}
                   </Badge>
-                  <span className="text-xs text-gray-500">最后修改: {project.lastModified}</span>
                 </div>
-                <CardTitle className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
-                  {project.title}
-                </CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
-                <CardDescription className="text-gray-600 mb-4 leading-relaxed">
+                <p className="text-gray-600 mb-4 leading-relaxed">
                   {project.description}
-                </CardDescription>
+                </p>
                 
                 <div className="flex items-center justify-between">
+                  <span className="text-xs text-gray-500">最后修改: {project.lastModified}</span>
                   <Badge variant="outline" className="text-gray-600 border-gray-300">
                     {project.category}
                   </Badge>
-                  
-                  <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Link to={`/editor/${project.id}`}>
-                      <Button size="sm" variant="ghost" className="text-gray-500 hover:text-blue-600">
-                        <Edit3 size={14} />
-                      </Button>
-                    </Link>
-                    <Button size="sm" variant="ghost" className="text-gray-500 hover:text-green-600">
-                      <Copy size={14} />
+                </div>
+                
+                <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity mt-3">
+                  <Link to={`/editor/${project.id}`} className="flex-1">
+                    <Button size="sm" variant="ghost" className="w-full text-gray-500 hover:text-blue-600">
+                      <Edit3 size={14} className="mr-1" />
+                      编辑
                     </Button>
-                    <Button size="sm" variant="ghost" className="text-gray-500 hover:text-red-600">
-                      <Trash2 size={14} />
-                    </Button>
-                  </div>
+                  </Link>
+                  <Button size="sm" variant="ghost" className="text-gray-500 hover:text-green-600">
+                    <Copy size={14} />
+                  </Button>
+                  <Button size="sm" variant="ghost" className="text-gray-500 hover:text-red-600">
+                    <Trash2 size={14} />
+                  </Button>
                 </div>
               </CardContent>
             </Card>
