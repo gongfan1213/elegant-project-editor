@@ -1,0 +1,165 @@
+
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Search, Plus, Edit3, Copy, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import Header from "@/components/Header";
+
+const MyProjects = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeFilter, setActiveFilter] = useState("全部");
+
+  const filters = ["全部", "科技", "传媒", "灯", "生活方式", "美妆", "旅行"];
+  
+  const projects = [
+    {
+      id: "1",
+      title: "iPhone 15 Pro深度评测",
+      description: "全面解析iPhone 15 Pro的设计、性能、摄影等特性，为用户提供购买决策建议",
+      status: "已完成",
+      category: "科技",
+      lastModified: "2024-06-06",
+      statusColor: "bg-green-100 text-green-800"
+    },
+    {
+      id: "2", 
+      title: "夏日护肤攻略",
+      description: "分享夏季护肤的关键要点，推荐适合的护肤产品和防晒步骤",
+      status: "草稿",
+      category: "美妆",
+      lastModified: "2024-06-05",
+      statusColor: "bg-yellow-100 text-yellow-800"
+    },
+    {
+      id: "3",
+      title: "职场新人必备指南", 
+      description: "为初入职场的新人提供实用建议，包括工作技巧、人际关系等",
+      status: "进行中",
+      category: "灯",
+      lastModified: "2024-06-04",
+      statusColor: "bg-blue-100 text-blue-800"
+    },
+    {
+      id: "4",
+      title: "成都美食探店",
+      description: "探索成都地道美食，分享隐藏的美食店铺和特色菜品",
+      status: "已完成",
+      category: "旅行",
+      lastModified: "2024-06-03",
+      statusColor: "bg-green-100 text-green-800"
+    }
+  ];
+
+  const filteredProjects = projects.filter(project => {
+    const matchesSearch = project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         project.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesFilter = activeFilter === "全部" || project.category === activeFilter;
+    return matchesSearch && matchesFilter;
+  });
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      
+      <main className="max-w-7xl mx-auto px-6 py-8">
+        {/* Search and Filters */}
+        <div className="mb-8">
+          <div className="relative mb-6">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+            <Input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="搜索项目..."
+              className="pl-10 py-3 text-lg border-gray-200 focus:border-blue-500"
+            />
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <span className="text-sm font-medium text-gray-700">标签分类</span>
+              <div className="flex flex-wrap gap-2">
+                {filters.map((filter) => (
+                  <Button
+                    key={filter}
+                    variant={activeFilter === filter ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setActiveFilter(filter)}
+                    className={`${
+                      activeFilter === filter 
+                        ? "bg-blue-600 hover:bg-blue-700 text-white" 
+                        : "border-gray-300 text-gray-700 hover:bg-gray-50"
+                    } transition-colors`}
+                  >
+                    {filter}
+                  </Button>
+                ))}
+                <Button variant="outline" size="sm" className="border-dashed border-gray-300 text-gray-500">
+                  + 新增标签
+                </Button>
+              </div>
+            </div>
+            
+            <div className="flex space-x-3">
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                <Plus size={16} className="mr-2" />
+                新增项目
+              </Button>
+              <Button variant="outline" className="border-gray-300 text-gray-700">
+                管理项目
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Projects Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredProjects.map((project) => (
+            <Card key={project.id} className="hover:shadow-lg transition-all duration-200 cursor-pointer group border-0 shadow-md">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between mb-3">
+                  <Badge className={`${project.statusColor} border-0`}>
+                    {project.status}
+                  </Badge>
+                  <span className="text-xs text-gray-500">最后修改: {project.lastModified}</span>
+                </div>
+                <CardTitle className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                  {project.title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <CardDescription className="text-gray-600 mb-4 leading-relaxed">
+                  {project.description}
+                </CardDescription>
+                
+                <div className="flex items-center justify-between">
+                  <Badge variant="outline" className="text-gray-600 border-gray-300">
+                    {project.category}
+                  </Badge>
+                  
+                  <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Link to={`/editor/${project.id}`}>
+                      <Button size="sm" variant="ghost" className="text-gray-500 hover:text-blue-600">
+                        <Edit3 size={14} />
+                      </Button>
+                    </Link>
+                    <Button size="sm" variant="ghost" className="text-gray-500 hover:text-green-600">
+                      <Copy size={14} />
+                    </Button>
+                    <Button size="sm" variant="ghost" className="text-gray-500 hover:text-red-600">
+                      <Trash2 size={14} />
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default MyProjects;
