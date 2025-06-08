@@ -137,7 +137,6 @@ const Editor = () => {
               variant={leftPanelView === "drafts" ? "default" : "outline"}
               size="sm"
               onClick={() => setLeftPanelView("drafts")}
-              className={leftPanelView === "drafts" ? "bg-primary hover:bg-primary/90 text-primary-foreground" : ""}
             >
               文本草稿
             </Button>
@@ -145,7 +144,6 @@ const Editor = () => {
               variant={leftPanelView === "ideas" ? "default" : "outline"}
               size="sm"
               onClick={() => setLeftPanelView("ideas")}
-              className={leftPanelView === "ideas" ? "bg-primary hover:bg-primary/90 text-primary-foreground" : ""}
             >
               我的想法
             </Button>
