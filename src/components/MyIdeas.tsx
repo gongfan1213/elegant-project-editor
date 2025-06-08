@@ -1,15 +1,16 @@
 
 import { useState } from "react";
-import { Copy, Trash2 } from "lucide-react";
+import { Copy, Trash2, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 
 interface MyIdeasProps {
   onSelectIdea: (idea: string) => void;
+  onBackToDrafts?: () => void;
 }
 
-const MyIdeas = ({ onSelectIdea }: MyIdeasProps) => {
+const MyIdeas = ({ onSelectIdea, onBackToDrafts }: MyIdeasProps) => {
   const [ideas, setIdeas] = useState([
     {
       id: "1",
@@ -54,7 +55,20 @@ const MyIdeas = ({ onSelectIdea }: MyIdeasProps) => {
   return (
     <div className="p-4 h-full flex flex-col">
       <div className="mb-4">
-        <h3 className="font-semibold text-gray-900 mb-3">我的想法</h3>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-semibold text-gray-900">我的想法</h3>
+          {onBackToDrafts && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onBackToDrafts}
+              className="text-gray-600 hover:text-gray-900"
+            >
+              <ArrowLeft size={16} className="mr-1" />
+              返回草稿
+            </Button>
+          )}
+        </div>
         <div className="space-y-2">
           <Textarea
             value={newIdea}

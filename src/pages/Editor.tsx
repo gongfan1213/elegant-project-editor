@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, Link, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Save, Download, Copy, Trash2 } from "lucide-react";
@@ -140,14 +139,14 @@ const Editor = () => {
           <div className="flex items-center justify-between mb-3">
             <div className="flex space-x-2">
               <Button
-                variant={leftPanelView === "drafts" ? "default" : "outline"}
+                variant="default"
                 size="sm"
                 onClick={() => setLeftPanelView("drafts")}
               >
                 文本草稿
               </Button>
               <Button
-                variant={leftPanelView === "ideas" ? "default" : "outline"}
+                variant="outline"
                 size="sm"
                 onClick={() => setLeftPanelView("ideas")}
               >
