@@ -1,17 +1,18 @@
+
 import { useState, useEffect } from "react";
 import { useParams, Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Save, Download, Copy, Trash2, History } from "lucide-react";
+import { ArrowLeft, Save, Download, Copy, Trash2, MessageSquarePlus, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ResizablePanels from "@/components/ResizablePanels";
 import ImportUrlDialog from "@/components/ImportUrlDialog";
 import MyIdeas from "@/components/MyIdeas";
 
 type LeftPanelView = "drafts" | "ideas";
+type RightPanelView = "current" | "history";
 
 const Editor = () => {
   const { id } = useParams();
@@ -43,6 +44,7 @@ const Editor = () => {
 
   const [chatInput, setChatInput] = useState("");
   const [leftPanelView, setLeftPanelView] = useState<LeftPanelView>("drafts");
+  const [rightPanelView, setRightPanelView] = useState<RightPanelView>("current");
   const [drafts, setDrafts] = useState([
     {
       id: "1",
@@ -151,6 +153,11 @@ const Editor = () => {
     setDrafts(prev => prev.filter(draft => draft.id !== draftId));
   };
 
+  const handleNewChat = () => {
+    setAiChat([]);
+    setRightPanelView("current");
+  };
+
   const renderLeftPanel = () => {
     if (leftPanelView === "ideas") {
       return (
@@ -256,61 +263,80 @@ const Editor = () => {
 
   const rightPanel = (
     <div className="flex flex-col h-full">
+      {/* AI助手标题栏，带有新对话和历史记录图标 */}
       <div className="p-4 border-b border-gray-200">
-        <h3 className="font-semibold text-gray-900">AI助手</h3>
+        <div className="flex items-center justify-between">
+          <h3 className="font-semibold text-gray-900">AI助手</h3>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={handleNewChat}
+            >
+              <MessageSquarePlus size={16} />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => setRightPanelView(rightPanelView === "history" ? "current" : "history")}
+            >
+              <History size={16} />
+            </Button>
+          </div>
+        </div>
       </div>
       
-      <Tabs defaultValue="current" className="flex-1 flex flex-col">
-        <TabsList className="grid w-full grid-cols-2 mx-4 mt-2">
-          <TabsTrigger value="current">当前对话</TabsTrigger>
-          <TabsTrigger value="history">历史记录</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="current" className="flex-1 flex flex-col">
-          <div className="flex-1 p-4 space-y-4 overflow-y-auto">
-            {aiChat.map((message, index) => (
-              <div key={index} className={`${message.type === 'ai' ? 'bg-primary/10' : 'bg-gray-50'} rounded-lg p-3`}>
-                <p className="text-sm text-gray-700 leading-relaxed">{message.message}</p>
-                <span className="text-xs text-gray-500 mt-2 block">{message.time}</span>
+      {/* 内容区域 */}
+      <div className="flex-1 flex flex-col">
+        {rightPanelView === "current" ? (
+          <>
+            <div className="flex-1 p-4 space-y-4 overflow-y-auto">
+              {aiChat.map((message, index) => (
+                <div key={index} className={`${message.type === 'ai' ? 'bg-primary/10' : 'bg-gray-50'} rounded-lg p-3`}>
+                  <p className="text-sm text-gray-700 leading-relaxed">{message.message}</p>
+                  <span className="text-xs text-gray-500 mt-2 block">{message.time}</span>
+                </div>
+              ))}
+            </div>
+            
+            <div className="p-4 border-t border-gray-200">
+              <div className="flex space-x-2">
+                <Input 
+                  placeholder="与AI对话..." 
+                  className="flex-1" 
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                />
+                <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground" onClick={handleSendMessage}>
+                  发送
+                </Button>
               </div>
-            ))}
-          </div>
-          
-          <div className="p-4 border-t border-gray-200">
-            <div className="flex space-x-2">
-              <Input 
-                placeholder="与AI对话..." 
-                className="flex-1" 
-                value={chatInput}
-                onChange={(e) => setChatInput(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-              />
-              <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground" onClick={handleSendMessage}>
-                发送
-              </Button>
+            </div>
+          </>
+        ) : (
+          <div className="flex-1 overflow-y-auto p-4">
+            <div className="space-y-3">
+              {chatHistory.map((session) => (
+                <Card key={session.id} className="cursor-pointer hover:shadow-md transition-shadow">
+                  <CardContent className="p-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-medium text-sm text-gray-900">{session.title}</h4>
+                      <History size={14} className="text-gray-400" />
+                    </div>
+                    <p className="text-xs text-gray-500 mb-2">{session.date}</p>
+                    <p className="text-xs text-gray-600 line-clamp-2">
+                      {session.messages[0]?.message || "暂无消息"}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
-        </TabsContent>
-        
-        <TabsContent value="history" className="flex-1 overflow-y-auto p-4">
-          <div className="space-y-3">
-            {chatHistory.map((session) => (
-              <Card key={session.id} className="cursor-pointer hover:shadow-md transition-shadow">
-                <CardContent className="p-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-medium text-sm text-gray-900">{session.title}</h4>
-                    <History size={14} className="text-gray-400" />
-                  </div>
-                  <p className="text-xs text-gray-500 mb-2">{session.date}</p>
-                  <p className="text-xs text-gray-600 line-clamp-2">
-                    {session.messages[0]?.message || "暂无消息"}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </TabsContent>
-      </Tabs>
+        )}
+      </div>
     </div>
   );
 

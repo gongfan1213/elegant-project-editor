@@ -55,18 +55,18 @@ const MyIdeas = ({ onSelectIdea, onBackToDrafts }: MyIdeasProps) => {
   return (
     <div className="p-4 h-full flex flex-col">
       {/* Header with back button */}
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-gray-900">我的想法</h3>
+      <div className="flex items-center mb-4">
         {onBackToDrafts && (
           <Button
             variant="ghost"
             size="sm"
             onClick={onBackToDrafts}
-            className="text-gray-600 hover:text-gray-900"
+            className="text-gray-600 hover:text-gray-900 mr-3 h-8 w-8 p-0"
           >
             <ArrowLeft size={16} />
           </Button>
         )}
+        <h3 className="font-semibold text-gray-900">我的想法</h3>
       </div>
 
       {/* Expanded input area - takes up 3/4 of the space */}
@@ -90,7 +90,7 @@ const MyIdeas = ({ onSelectIdea, onBackToDrafts }: MyIdeasProps) => {
 
       {/* Previous notes section - takes up remaining 1/4 with scroll */}
       <div className="flex-1 overflow-y-auto space-y-3">
-        <h4 className="text-sm font-medium text-gray-700 mb-2">历史想法</h4>
+        <h4 className="text-sm font-semibold text-gray-700 mb-2">历史想法</h4>
         {ideas.map((idea) => (
           <Card key={idea.id} className="cursor-pointer hover:shadow-md transition-shadow border-0 shadow-sm group">
             <CardContent className="p-3">
