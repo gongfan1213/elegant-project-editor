@@ -16,7 +16,7 @@ const Header = () => {
               variant="ghost"
               className={`relative px-0 py-2 text-gray-700 hover:text-gray-900 bg-transparent hover:bg-transparent ${
                 location.pathname === "/" 
-                  ? "text-gray-900 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-gray-900" 
+                  ? "text-gray-900 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-red-500" 
                   : ""
               }`}
             >
@@ -29,7 +29,7 @@ const Header = () => {
               variant="ghost"
               className={`relative px-0 py-2 text-gray-700 hover:text-gray-900 bg-transparent hover:bg-transparent ${
                 location.pathname === "/my-projects" 
-                  ? "text-gray-900 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-gray-900" 
+                  ? "text-gray-900 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-red-500" 
                   : ""
               }`}
             >
@@ -40,10 +40,9 @@ const Header = () => {
 
         <div className="flex items-center ml-8">
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">N</span>
             </div>
-            <span className="text-xl font-semibold text-gray-900">Nova</span>
           </Link>
         </div>
       </div>

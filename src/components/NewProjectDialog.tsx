@@ -45,7 +45,7 @@ const NewProjectDialog = ({ onAddProject, availableTags, onAddTag }: NewProjectD
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+        <Button className="bg-red-500 hover:bg-red-600 text-white">
           <Plus size={16} className="mr-2" />
           新增项目
         </Button>

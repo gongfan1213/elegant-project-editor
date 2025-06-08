@@ -82,6 +82,10 @@ const MyProjects = () => {
     setProjects(prev => prev.filter(project => !projectIds.includes(project.id)));
   };
 
+  const handleDeleteProject = (projectId: string) => {
+    setProjects(prev => prev.filter(project => project.id !== projectId));
+  };
+
   const handleTitleDoubleClick = (projectId: string, currentTitle: string) => {
     setEditingTitle(projectId);
     setEditTitle(currentTitle);
@@ -127,7 +131,7 @@ const MyProjects = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="搜索项目..."
-              className="pl-10 py-3 text-lg border-gray-200 focus:border-blue-500"
+              className="pl-10 py-3 text-lg border-gray-200 focus:border-red-500"
             />
           </div>
           
@@ -143,7 +147,7 @@ const MyProjects = () => {
                     onClick={() => setActiveFilter(filter)}
                     className={`${
                       activeFilter === filter 
-                        ? "bg-blue-600 hover:bg-blue-700 text-white" 
+                        ? "bg-red-500 hover:bg-red-600 text-white" 
                         : "border-gray-300 text-gray-700 hover:bg-gray-50"
                     } transition-colors`}
                   >
@@ -178,7 +182,7 @@ const MyProjects = () => {
                     />
                   ) : (
                     <CardTitle 
-                      className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors flex-1"
+                      className="text-lg font-semibold text-gray-900 group-hover:text-red-600 transition-colors flex-1"
                       onDoubleClick={() => handleTitleDoubleClick(project.id, project.title)}
                     >
                       {project.title}
@@ -195,16 +199,18 @@ const MyProjects = () => {
                 </p>
                 
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500 group-hover:opacity-0 transition-opacity">
-                    最后修改: {project.lastModified}
-                  </span>
-                  <Badge variant="outline" className="text-gray-600 border-gray-300 group-hover:opacity-0 transition-opacity">
-                    {project.category}
-                  </Badge>
+                  <div className="flex items-center justify-between w-full">
+                    <span className="text-xs text-gray-500 group-hover:opacity-0 transition-opacity">
+                      最后修改: {project.lastModified}
+                    </span>
+                    <Badge variant="outline" className="text-gray-600 border-gray-300 group-hover:opacity-0 transition-opacity">
+                      {project.category}
+                    </Badge>
+                  </div>
                   
                   <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity absolute">
                     <Link to={`/editor/${project.id}`}>
-                      <Button size="sm" variant="ghost" className="text-gray-500 hover:text-blue-600">
+                      <Button size="sm" variant="ghost" className="text-gray-500 hover:text-red-600">
                         <Edit3 size={14} className="mr-1" />
                         编辑
                       </Button>
@@ -212,7 +218,15 @@ const MyProjects = () => {
                     <Button size="sm" variant="ghost" className="text-gray-500 hover:text-green-600">
                       <Copy size={14} />
                     </Button>
-                    <Button size="sm" variant="ghost" className="text-gray-500 hover:text-red-600">
+                    <Button 
+                      size="sm" 
+                      variant="ghost" 
+                      className="text-gray-500 hover:text-red-600"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleDeleteProject(project.id);
+                      }}
+                    >
                       <Trash2 size={14} />
                     </Button>
                   </div>

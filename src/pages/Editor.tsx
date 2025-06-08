@@ -1,6 +1,5 @@
-
-import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams, Link, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Save, Download, Copy, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,9 +8,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import ResizablePanels from "@/components/ResizablePanels";
 import ImportUrlDialog from "@/components/ImportUrlDialog";
+import MyIdeas from "@/components/MyIdeas";
 
 const Editor = () => {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
   const [title, setTitle] = useState("iPhone 15 Pro深度评测");
   const [content, setContent] = useState(`📱 iPhone 15 Pro深度评测来啦！
 
@@ -38,6 +39,28 @@ const Editor = () => {
 #iPhone15Pro #科技评测 #数码博主 #手机推荐`);
 
   const [chatInput, setChatInput] = useState("");
+  const [leftPanelView, setLeftPanelView] = useState<"drafts" | "ideas">("drafts");
+  const [drafts, setDrafts] = useState([
+    {
+      id: "1",
+      title: "iPhone 15 Pro深度评测",
+      preview: "📱 iPhone 15 Pro深度评测来啦！今天给大家带来最新的iPhone 15 Pro全面评测...",
+      time: "2024-06-06 14:30"
+    },
+    {
+      id: "2",
+      title: "iPhone 15 Pro上手体验", 
+      preview: "🔥 拿到iPhone 15 Pro的第一时间，就忍不住要分享给大家这个使用体验...",
+      time: "2024-06-05 16:20"
+    },
+    {
+      id: "3",
+      title: "iPhone 15 Pro vs iPhone 14 Pro对比",
+      preview: "⚡ 很多朋友问iPhone 15 Pro相比14 Pro到底提升在哪里，今天就来...",
+      time: "2024-06-04 10:15"
+    }
+  ]);
+
   const [aiChat, setAiChat] = useState([
     {
       type: "ai",
@@ -56,27 +79,26 @@ const Editor = () => {
     }
   ]);
 
-  const suggestions = [
-    {
-      title: "iPhone 15 Pro深度评测",
-      preview: "📱 iPhone 15 Pro深度评测来啦！今天给大家带来最新的iPhone 15 Pro全面评测...",
-      time: "2024-06-06 14:30"
-    },
-    {
-      title: "iPhone 15 Pro上手体验", 
-      preview: "🔥 拿到iPhone 15 Pro的第一时间，就忍不住要分享给大家这个使用体验...",
-      time: "2024-06-05 16:20"
-    },
-    {
-      title: "iPhone 15 Pro vs iPhone 14 Pro对比",
-      preview: "⚡ 很多朋友问iPhone 15 Pro相比14 Pro到底提升在哪里，今天就来...",
-      time: "2024-06-04 10:15"
+  useEffect(() => {
+    // 如果是新建草稿且有内容参数，设置初始内容
+    const initialContent = searchParams.get('content');
+    if (id === 'new' && initialContent) {
+      setContent(initialContent);
+      setTitle("新建草稿");
+    } else if (id === 'new') {
+      setContent("");
+      setTitle("新建草稿");
     }
-  ];
+  }, [id, searchParams]);
 
   const handleImportContent = (importedTitle: string, importedContent: string) => {
     setTitle(importedTitle);
     setContent(importedContent);
+  };
+
+  const handleSelectIdea = (ideaContent: string) => {
+    setContent(ideaContent);
+    setTitle("基于想法的新草稿");
   };
 
   const handleSendMessage = () => {
@@ -91,41 +113,86 @@ const Editor = () => {
     }
   };
 
-  const leftPanel = (
+  const handleNewDraft = () => {
+    setTitle("新建草稿");
+    setContent("");
+  };
+
+  const handleCopyDraft = (draftContent: string) => {
+    navigator.clipboard.writeText(draftContent);
+  };
+
+  const handleDeleteDraft = (draftId: string) => {
+    setDrafts(prev => prev.filter(draft => draft.id !== draftId));
+  };
+
+  const leftPanel = leftPanelView === "drafts" ? (
     <div className="p-4 h-full flex flex-col">
       <div className="mb-4">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="font-semibold text-gray-900">文本草稿</h3>
+          <div className="flex space-x-2">
+            <Button
+              variant={leftPanelView === "drafts" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setLeftPanelView("drafts")}
+              className={leftPanelView === "drafts" ? "bg-red-500 hover:bg-red-600 text-white" : ""}
+            >
+              文本草稿
+            </Button>
+            <Button
+              variant={leftPanelView === "ideas" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setLeftPanelView("ideas")}
+              className={leftPanelView === "ideas" ? "bg-red-500 hover:bg-red-600 text-white" : ""}
+            >
+              我的想法
+            </Button>
+          </div>
           <ImportUrlDialog onImport={handleImportContent} />
         </div>
-        <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white mb-4">
+        <Button 
+          className="w-full bg-red-500 hover:bg-red-600 text-white mb-4"
+          onClick={handleNewDraft}
+        >
           <Download size={16} className="mr-2" />
           新建草稿
         </Button>
       </div>
 
       <div className="flex-1 overflow-y-auto space-y-3">
-        {suggestions.map((suggestion, index) => (
+        {drafts.map((draft, index) => (
           <Card key={index} className="cursor-pointer hover:shadow-md transition-shadow border-0 shadow-sm group">
             <CardContent className="p-3">
               <div className="flex items-center justify-between mb-2">
-                <h4 className="font-medium text-sm text-gray-900 line-clamp-1 flex-1">{suggestion.title}</h4>
+                <h4 className="font-medium text-sm text-gray-900 line-clamp-1 flex-1">{draft.title}</h4>
                 <div className="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
+                  <Button 
+                    size="sm" 
+                    variant="ghost" 
+                    className="h-6 w-6 p-0"
+                    onClick={() => handleCopyDraft(draft.preview)}
+                  >
                     <Copy size={12} />
                   </Button>
-                  <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
+                  <Button 
+                    size="sm" 
+                    variant="ghost" 
+                    className="h-6 w-6 p-0"
+                    onClick={() => handleDeleteDraft(draft.id)}
+                  >
                     <Trash2 size={12} />
                   </Button>
                 </div>
               </div>
-              <p className="text-xs text-gray-600 line-clamp-2 mb-2">{suggestion.preview}</p>
-              <span className="text-xs text-gray-400">{suggestion.time}</span>
+              <p className="text-xs text-gray-600 line-clamp-2 mb-2">{draft.preview}</p>
+              <span className="text-xs text-gray-400">{draft.time}</span>
             </CardContent>
           </Card>
         ))}
       </div>
     </div>
+  ) : (
+    <MyIdeas onSelectIdea={handleSelectIdea} />
   );
 
   const centerPanel = (
@@ -158,7 +225,7 @@ const Editor = () => {
       
       <div className="flex-1 p-4 space-y-4 overflow-y-auto">
         {aiChat.map((message, index) => (
-          <div key={index} className={`${message.type === 'ai' ? 'bg-blue-50' : 'bg-gray-50'} rounded-lg p-3`}>
+          <div key={index} className={`${message.type === 'ai' ? 'bg-red-50' : 'bg-gray-50'} rounded-lg p-3`}>
             <p className="text-sm text-gray-700 leading-relaxed">{message.message}</p>
             <span className="text-xs text-gray-500 mt-2 block">{message.time}</span>
           </div>
@@ -174,7 +241,7 @@ const Editor = () => {
             onChange={(e) => setChatInput(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
           />
-          <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSendMessage}>
+          <Button size="sm" className="bg-red-500 hover:bg-red-600 text-white" onClick={handleSendMessage}>
             发送
           </Button>
         </div>
@@ -195,7 +262,7 @@ const Editor = () => {
               </Button>
             </Link>
             <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center">
+              <div className="w-6 h-6 bg-red-500 rounded flex items-center justify-center">
                 <span className="text-white font-bold text-xs">N</span>
               </div>
               <span className="font-semibold text-gray-900">Nova</span>
@@ -203,7 +270,7 @@ const Editor = () => {
           </div>
           
           <div className="flex items-center space-x-3">
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Button className="bg-red-500 hover:bg-red-600 text-white">
               <Save size={16} className="mr-2" />
               保存
             </Button>

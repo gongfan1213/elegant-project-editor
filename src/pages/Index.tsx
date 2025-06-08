@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +10,7 @@ import Header from "@/components/Header";
 
 const Index = () => {
   const [inputValue, setInputValue] = useState("");
+  const navigate = useNavigate();
 
   const projects = [
     {
@@ -37,6 +39,21 @@ const Index = () => {
     },
   ];
 
+  const handleStartCreating = () => {
+    if (inputValue.trim()) {
+      // 跳转到编辑器并传递初始内容
+      navigate(`/editor/new?content=${encodeURIComponent(inputValue.trim())}`);
+    } else {
+      navigate('/editor/new');
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleStartCreating();
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -57,10 +74,14 @@ const Index = () => {
               <Input
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
+                onKeyPress={handleKeyPress}
                 placeholder="将你的想法转化为精彩内容 - 从这里开始"
                 className="flex-1 border-0 focus:ring-0 text-lg py-6 px-4"
               />
-              <Button className="m-2 bg-gray-800 hover:bg-gray-900 text-white rounded-full px-8 py-3">
+              <Button 
+                onClick={handleStartCreating}
+                className="m-2 bg-red-500 hover:bg-red-600 text-white rounded-full px-8 py-3"
+              >
                 <ArrowRight size={20} />
               </Button>
             </div>
