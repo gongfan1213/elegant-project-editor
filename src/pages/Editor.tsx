@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, Link, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Save, Download, Copy, Trash2 } from "lucide-react";
@@ -128,72 +129,76 @@ const Editor = () => {
     setDrafts(prev => prev.filter(draft => draft.id !== draftId));
   };
 
-  const leftPanel = leftPanelView === "drafts" ? (
-    <div className="p-4 h-full flex flex-col">
-      <div className="mb-4">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex space-x-2">
-            <Button
-              variant={leftPanelView === "drafts" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setLeftPanelView("drafts")}
-            >
-              文本草稿
-            </Button>
-            <Button
-              variant={leftPanelView === "ideas" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setLeftPanelView("ideas")}
-            >
-              我的想法
-            </Button>
+  const renderLeftPanel = () => {
+    if (leftPanelView === "ideas") {
+      return <MyIdeas onSelectIdea={handleSelectIdea} />;
+    }
+    
+    return (
+      <div className="p-4 h-full flex flex-col">
+        <div className="mb-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex space-x-2">
+              <Button
+                variant={leftPanelView === "drafts" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setLeftPanelView("drafts")}
+              >
+                文本草稿
+              </Button>
+              <Button
+                variant={leftPanelView === "ideas" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setLeftPanelView("ideas")}
+              >
+                我的想法
+              </Button>
+            </div>
+            <ImportUrlDialog onImport={handleImportContent} />
           </div>
-          <ImportUrlDialog onImport={handleImportContent} />
+          <Button 
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground mb-4"
+            onClick={handleNewDraft}
+          >
+            <Download size={16} className="mr-2" />
+            新建草稿
+          </Button>
         </div>
-        <Button 
-          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground mb-4"
-          onClick={handleNewDraft}
-        >
-          <Download size={16} className="mr-2" />
-          新建草稿
-        </Button>
-      </div>
 
-      <div className="flex-1 overflow-y-auto space-y-3">
-        {drafts.map((draft, index) => (
-          <Card key={index} className="cursor-pointer hover:shadow-md transition-shadow border-0 shadow-sm group">
-            <CardContent className="p-3">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="font-medium text-sm text-gray-900 line-clamp-1 flex-1">{draft.title}</h4>
-                <div className="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button 
-                    size="sm" 
-                    variant="ghost" 
-                    className="h-6 w-6 p-0"
-                    onClick={() => handleCopyDraft(draft.preview)}
-                  >
-                    <Copy size={12} />
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="ghost" 
-                    className="h-6 w-6 p-0"
-                    onClick={() => handleDeleteDraft(draft.id)}
-                  >
-                    <Trash2 size={12} />
-                  </Button>
+        <div className="flex-1 overflow-y-auto space-y-3">
+          {drafts.map((draft, index) => (
+            <Card key={index} className="cursor-pointer hover:shadow-md transition-shadow border-0 shadow-sm group">
+              <CardContent className="p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-medium text-sm text-gray-900 line-clamp-1 flex-1">{draft.title}</h4>
+                  <div className="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button 
+                      size="sm" 
+                      variant="ghost" 
+                      className="h-6 w-6 p-0"
+                      onClick={() => handleCopyDraft(draft.preview)}
+                    >
+                      <Copy size={12} />
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="ghost" 
+                      className="h-6 w-6 p-0"
+                      onClick={() => handleDeleteDraft(draft.id)}
+                    >
+                      <Trash2 size={12} />
+                    </Button>
+                  </div>
                 </div>
-              </div>
-              <p className="text-xs text-gray-600 line-clamp-2 mb-2">{draft.preview}</p>
-              <span className="text-xs text-gray-400">{draft.time}</span>
-            </CardContent>
-          </Card>
-        ))}
+                <p className="text-xs text-gray-600 line-clamp-2 mb-2">{draft.preview}</p>
+                <span className="text-xs text-gray-400">{draft.time}</span>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
-    </div>
-  ) : (
-    <MyIdeas onSelectIdea={handleSelectIdea} />
-  );
+    );
+  };
 
   const centerPanel = (
     <div className="p-6 h-full flex flex-col">
@@ -281,7 +286,7 @@ const Editor = () => {
       <div className="max-w-7xl mx-auto px-6 py-6">
         <div className="h-[calc(100vh-140px)]">
           <ResizablePanels
-            leftPanel={leftPanel}
+            leftPanel={renderLeftPanel()}
             centerPanel={centerPanel}
             rightPanel={rightPanel}
           />
