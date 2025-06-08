@@ -168,7 +168,7 @@ const MyProjects = () => {
         {/* Projects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProjects.map((project) => (
-            <Card key={project.id} className="hover:shadow-lg transition-all duration-200 cursor-pointer group border-0 shadow-md">
+            <Card key={project.id} className="hover:shadow-lg transition-all duration-200 cursor-pointer group border-0 shadow-md relative">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between mb-3">
                   {editingTitle === project.id ? (
@@ -199,37 +199,37 @@ const MyProjects = () => {
                 </p>
                 
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center justify-between w-full">
-                    <span className="text-xs text-gray-500 group-hover:opacity-0 transition-opacity">
+                  <div className="flex flex-col space-y-1">
+                    <span className="text-xs text-gray-500">
                       最后修改: {project.lastModified}
                     </span>
-                    <Badge variant="outline" className="text-gray-600 border-gray-300 group-hover:opacity-0 transition-opacity">
+                    <Badge variant="outline" className="text-gray-600 border-gray-300 w-fit">
                       {project.category}
                     </Badge>
                   </div>
-                  
-                  <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity absolute">
-                    <Link to={`/editor/${project.id}`}>
-                      <Button size="sm" variant="ghost" className="text-gray-500 hover:text-red-600">
-                        <Edit3 size={14} className="mr-1" />
-                        编辑
-                      </Button>
-                    </Link>
-                    <Button size="sm" variant="ghost" className="text-gray-500 hover:text-green-600">
-                      <Copy size={14} />
+                </div>
+                
+                {/* Action buttons positioned on the right */}
+                <div className="absolute top-4 right-4 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Link to={`/editor/${project.id}`}>
+                    <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-gray-500 hover:text-red-600 hover:bg-red-50">
+                      <Edit3 size={14} />
                     </Button>
-                    <Button 
-                      size="sm" 
-                      variant="ghost" 
-                      className="text-gray-500 hover:text-red-600"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleDeleteProject(project.id);
-                      }}
-                    >
-                      <Trash2 size={14} />
-                    </Button>
-                  </div>
+                  </Link>
+                  <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-gray-500 hover:text-green-600 hover:bg-green-50">
+                    <Copy size={14} />
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="ghost" 
+                    className="h-8 w-8 p-0 text-gray-500 hover:text-red-600 hover:bg-red-50"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleDeleteProject(project.id);
+                    }}
+                  >
+                    <Trash2 size={14} />
+                  </Button>
                 </div>
               </CardContent>
             </Card>

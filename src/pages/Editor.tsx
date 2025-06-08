@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Save, Download, Copy, Trash2 } from "lucide-react";
+import { ArrowLeft, Save, Download, Copy, Trash2, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ResizablePanels from "@/components/ResizablePanels";
 import ImportUrlDialog from "@/components/ImportUrlDialog";
 import MyIdeas from "@/components/MyIdeas";
@@ -81,6 +82,28 @@ const Editor = () => {
     }
   ]);
 
+  // Chat history for different sessions
+  const [chatHistory] = useState([
+    {
+      id: "1",
+      title: "iPhone 15 Pro评测优化",
+      date: "2024-06-06",
+      messages: aiChat
+    },
+    {
+      id: "2", 
+      title: "美妆内容策划",
+      date: "2024-06-05",
+      messages: [
+        {
+          type: "ai",
+          message: "让我帮你策划夏日护肤的内容方向",
+          time: "10:15"
+        }
+      ]
+    }
+  ]);
+
   useEffect(() => {
     // 如果是新建草稿且有内容参数，设置初始内容
     const initialContent = searchParams.get('content');
@@ -130,7 +153,12 @@ const Editor = () => {
 
   const renderLeftPanel = () => {
     if (leftPanelView === "ideas") {
-      return <MyIdeas onSelectIdea={handleSelectIdea} />;
+      return (
+        <MyIdeas 
+          onSelectIdea={handleSelectIdea} 
+          onBackToDrafts={() => setLeftPanelView("drafts")}
+        />
+      );
     }
     
     return (
@@ -201,13 +229,18 @@ const Editor = () => {
 
   const centerPanel = (
     <div className="p-6 h-full flex flex-col">
-      <div className="mb-6">
+      {/* Title row with save button */}
+      <div className="mb-6 flex items-center justify-between">
         <Input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="text-2xl font-bold border-0 p-0 focus:ring-0 text-gray-900"
+          className="text-2xl font-bold border-0 p-0 focus:ring-0 text-gray-900 flex-1 mr-4"
           placeholder="输入标题..."
         />
+        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
+          <Save size={16} className="mr-2" />
+          保存
+        </Button>
       </div>
       
       <Separator className="mb-6" />
@@ -227,29 +260,57 @@ const Editor = () => {
         <h3 className="font-semibold text-gray-900">AI助手</h3>
       </div>
       
-      <div className="flex-1 p-4 space-y-4 overflow-y-auto">
-        {aiChat.map((message, index) => (
-          <div key={index} className={`${message.type === 'ai' ? 'bg-primary/10' : 'bg-gray-50'} rounded-lg p-3`}>
-            <p className="text-sm text-gray-700 leading-relaxed">{message.message}</p>
-            <span className="text-xs text-gray-500 mt-2 block">{message.time}</span>
+      <Tabs defaultValue="current" className="flex-1 flex flex-col">
+        <TabsList className="grid w-full grid-cols-2 mx-4 mt-2">
+          <TabsTrigger value="current">当前对话</TabsTrigger>
+          <TabsTrigger value="history">历史记录</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="current" className="flex-1 flex flex-col">
+          <div className="flex-1 p-4 space-y-4 overflow-y-auto">
+            {aiChat.map((message, index) => (
+              <div key={index} className={`${message.type === 'ai' ? 'bg-primary/10' : 'bg-gray-50'} rounded-lg p-3`}>
+                <p className="text-sm text-gray-700 leading-relaxed">{message.message}</p>
+                <span className="text-xs text-gray-500 mt-2 block">{message.time}</span>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      
-      <div className="p-4 border-t border-gray-200">
-        <div className="flex space-x-2">
-          <Input 
-            placeholder="与AI对话..." 
-            className="flex-1" 
-            value={chatInput}
-            onChange={(e) => setChatInput(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-          />
-          <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground" onClick={handleSendMessage}>
-            发送
-          </Button>
-        </div>
-      </div>
+          
+          <div className="p-4 border-t border-gray-200">
+            <div className="flex space-x-2">
+              <Input 
+                placeholder="与AI对话..." 
+                className="flex-1" 
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+              />
+              <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground" onClick={handleSendMessage}>
+                发送
+              </Button>
+            </div>
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="history" className="flex-1 overflow-y-auto p-4">
+          <div className="space-y-3">
+            {chatHistory.map((session) => (
+              <Card key={session.id} className="cursor-pointer hover:shadow-md transition-shadow">
+                <CardContent className="p-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-medium text-sm text-gray-900">{session.title}</h4>
+                    <History size={14} className="text-gray-400" />
+                  </div>
+                  <p className="text-xs text-gray-500 mb-2">{session.date}</p>
+                  <p className="text-xs text-gray-600 line-clamp-2">
+                    {session.messages[0]?.message || "暂无消息"}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 
@@ -271,13 +332,6 @@ const Editor = () => {
               </div>
               <span className="font-semibold text-gray-900">Nova</span>
             </div>
-          </div>
-          
-          <div className="flex items-center space-x-3">
-            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
-              <Save size={16} className="mr-2" />
-              保存
-            </Button>
           </div>
         </div>
       </header>

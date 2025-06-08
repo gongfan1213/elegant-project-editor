@@ -31,7 +31,7 @@ const MyIdeas = ({ onSelectIdea, onBackToDrafts }: MyIdeasProps) => {
       const idea = {
         id: Date.now().toString(),
         content: newIdea.trim(),
-        time: new Date().toLocaleTimeString('zh-CN', { 
+        time: new Date().toLocaleString('zh-CN', { 
           year: 'numeric',
           month: '2-digit', 
           day: '2-digit',
@@ -54,28 +54,29 @@ const MyIdeas = ({ onSelectIdea, onBackToDrafts }: MyIdeasProps) => {
 
   return (
     <div className="p-4 h-full flex flex-col">
-      <div className="mb-4">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="font-semibold text-gray-900">我的想法</h3>
-          {onBackToDrafts && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onBackToDrafts}
-              className="text-gray-600 hover:text-gray-900"
-            >
-              <ArrowLeft size={16} className="mr-1" />
-              返回草稿
-            </Button>
-          )}
-        </div>
-        <div className="space-y-2">
+      {/* Header with back button */}
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="font-semibold text-gray-900">我的想法</h3>
+        {onBackToDrafts && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onBackToDrafts}
+            className="text-gray-600 hover:text-gray-900"
+          >
+            <ArrowLeft size={16} />
+          </Button>
+        )}
+      </div>
+
+      {/* Expanded input area - takes up 3/4 of the space */}
+      <div className="mb-6 flex-[3]">
+        <div className="space-y-3 h-full flex flex-col">
           <Textarea
             value={newIdea}
             onChange={(e) => setNewIdea(e.target.value)}
             placeholder="记录你的创作想法..."
-            className="resize-none"
-            rows={3}
+            className="resize-none flex-1 min-h-[200px]"
           />
           <Button 
             onClick={handleSaveIdea}
@@ -87,7 +88,9 @@ const MyIdeas = ({ onSelectIdea, onBackToDrafts }: MyIdeasProps) => {
         </div>
       </div>
 
+      {/* Previous notes section - takes up remaining 1/4 with scroll */}
       <div className="flex-1 overflow-y-auto space-y-3">
+        <h4 className="text-sm font-medium text-gray-700 mb-2">历史想法</h4>
         {ideas.map((idea) => (
           <Card key={idea.id} className="cursor-pointer hover:shadow-md transition-shadow border-0 shadow-sm group">
             <CardContent className="p-3">
