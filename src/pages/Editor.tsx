@@ -10,6 +10,8 @@ import ResizablePanels from "@/components/ResizablePanels";
 import ImportUrlDialog from "@/components/ImportUrlDialog";
 import MyIdeas from "@/components/MyIdeas";
 
+type LeftPanelView = "drafts" | "ideas";
+
 const Editor = () => {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
@@ -39,7 +41,7 @@ const Editor = () => {
 #iPhone15Pro #科技评测 #数码博主 #手机推荐`);
 
   const [chatInput, setChatInput] = useState("");
-  const [leftPanelView, setLeftPanelView] = useState<"drafts" | "ideas">("drafts");
+  const [leftPanelView, setLeftPanelView] = useState<LeftPanelView>("drafts");
   const [drafts, setDrafts] = useState([
     {
       id: "1",
@@ -135,7 +137,7 @@ const Editor = () => {
               variant={leftPanelView === "drafts" ? "default" : "outline"}
               size="sm"
               onClick={() => setLeftPanelView("drafts")}
-              className={leftPanelView === "drafts" ? "bg-red-500 hover:bg-red-600 text-white" : ""}
+              className={leftPanelView === "drafts" ? "bg-primary hover:bg-primary/90 text-primary-foreground" : ""}
             >
               文本草稿
             </Button>
@@ -143,7 +145,7 @@ const Editor = () => {
               variant={leftPanelView === "ideas" ? "default" : "outline"}
               size="sm"
               onClick={() => setLeftPanelView("ideas")}
-              className={leftPanelView === "ideas" ? "bg-red-500 hover:bg-red-600 text-white" : ""}
+              className={leftPanelView === "ideas" ? "bg-primary hover:bg-primary/90 text-primary-foreground" : ""}
             >
               我的想法
             </Button>
@@ -151,7 +153,7 @@ const Editor = () => {
           <ImportUrlDialog onImport={handleImportContent} />
         </div>
         <Button 
-          className="w-full bg-red-500 hover:bg-red-600 text-white mb-4"
+          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground mb-4"
           onClick={handleNewDraft}
         >
           <Download size={16} className="mr-2" />
@@ -225,7 +227,7 @@ const Editor = () => {
       
       <div className="flex-1 p-4 space-y-4 overflow-y-auto">
         {aiChat.map((message, index) => (
-          <div key={index} className={`${message.type === 'ai' ? 'bg-red-50' : 'bg-gray-50'} rounded-lg p-3`}>
+          <div key={index} className={`${message.type === 'ai' ? 'bg-primary/10' : 'bg-gray-50'} rounded-lg p-3`}>
             <p className="text-sm text-gray-700 leading-relaxed">{message.message}</p>
             <span className="text-xs text-gray-500 mt-2 block">{message.time}</span>
           </div>
@@ -241,7 +243,7 @@ const Editor = () => {
             onChange={(e) => setChatInput(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
           />
-          <Button size="sm" className="bg-red-500 hover:bg-red-600 text-white" onClick={handleSendMessage}>
+          <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground" onClick={handleSendMessage}>
             发送
           </Button>
         </div>
@@ -262,15 +264,15 @@ const Editor = () => {
               </Button>
             </Link>
             <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 bg-red-500 rounded flex items-center justify-center">
-                <span className="text-white font-bold text-xs">N</span>
+              <div className="w-6 h-6 bg-primary rounded flex items-center justify-center">
+                <span className="text-primary-foreground font-bold text-xs">N</span>
               </div>
               <span className="font-semibold text-gray-900">Nova</span>
             </div>
           </div>
           
           <div className="flex items-center space-x-3">
-            <Button className="bg-red-500 hover:bg-red-600 text-white">
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
               <Save size={16} className="mr-2" />
               保存
             </Button>
