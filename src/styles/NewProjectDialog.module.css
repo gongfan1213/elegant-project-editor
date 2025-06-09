@@ -1,0 +1,39 @@
+.triggerButton {
+  @apply bg-red-500 hover:bg-red-600 text-white;
+}
+
+.plusIcon {
+  @apply mr-2;
+}
+
+.dialogContent {
+  @apply sm:max-w-[425px];
+}
+
+.formContainer {
+  @apply space-y-4 py-4;
+}
+
+.inputGroup {
+  @apply space-y-2;
+}
+
+.label {
+  @apply text-sm font-medium;
+}
+
+.tagSelectContainer {
+  @apply space-y-2;
+}
+
+.newTagButton {
+  @apply w-full border-dashed;
+}
+
+.newTagInputContainer {
+  @apply flex space-x-2;
+}
+
+.buttonContainer {
+  @apply flex justify-end space-x-2;
+} 

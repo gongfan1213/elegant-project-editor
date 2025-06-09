@@ -1,0 +1,23 @@
+.container {
+    @apply flex h-full;
+  }
+  
+  .panel {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200;
+  }
+  
+  .leftPanel {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200;
+  }
+  
+  .centerPanel {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200 mx-1;
+  }
+  
+  .rightPanel {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200;
+  }
+  
+  .resizeHandle {
+    @apply w-1 bg-gray-200 hover:bg-gray-300 cursor-col-resize transition-colors;
+  }

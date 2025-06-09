@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Search, Edit3, Copy, Trash2 } from "lucide-react";
@@ -10,6 +9,7 @@ import Header from "@/components/Header";
 import NewProjectDialog from "@/components/NewProjectDialog";
 import ProjectManageDialog from "@/components/ProjectManageDialog";
 import NewTagDialog from "@/components/NewTagDialog";
+import styles from "@/styles/MyProjects.module.css";
 
 const MyProjects = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -119,37 +119,36 @@ const MyProjects = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className={styles.container}>
       <Header />
       
-      <main className="max-w-7xl mx-auto px-6 py-8">
-        {/* Search and Filters */}
-        <div className="mb-8">
-          <div className="relative mb-6">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+      <main className={styles.main}>
+        <div className={styles.searchContainer}>
+          <div className={styles.searchWrapper}>
+            <Search className={styles.searchIcon} size={20} />
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="搜索项目..."
-              className="pl-10 py-3 text-lg border-gray-200 focus:border-red-500"
+              className={styles.searchInput}
             />
           </div>
           
-          <div className="flex items-center justify-between">
+          <div className={styles.filtersContainer}>
             <div className="flex items-center space-x-2">
-              <span className="text-sm font-medium text-gray-700">标签分类</span>
-              <div className="flex flex-wrap gap-2">
+              <span className={styles.filtersLabel}>标签分类</span>
+              <div className={styles.filtersList}>
                 {tags.map((filter) => (
                   <Button
                     key={filter}
                     variant={activeFilter === filter ? "default" : "outline"}
                     size="sm"
                     onClick={() => setActiveFilter(filter)}
-                    className={`${
+                    className={`${styles.filterButton} ${
                       activeFilter === filter 
-                        ? "bg-red-500 hover:bg-red-600 text-white" 
-                        : "border-gray-300 text-gray-700 hover:bg-gray-50"
-                    } transition-colors`}
+                        ? styles.filterButtonActive
+                        : styles.filterButtonInactive
+                    }`}
                   >
                     {filter}
                   </Button>
@@ -158,72 +157,68 @@ const MyProjects = () => {
               </div>
             </div>
             
-            <div className="flex space-x-3">
+            <div className={styles.actionsContainer}>
               <NewProjectDialog onAddProject={handleAddProject} availableTags={tags} onAddTag={handleAddTag} />
               <ProjectManageDialog projects={projects} onDeleteProjects={handleDeleteProjects} />
             </div>
           </div>
         </div>
 
-        {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className={styles.projectsGrid}>
           {filteredProjects.map((project) => (
-            <Card key={project.id} className="hover:shadow-lg transition-all duration-200 cursor-pointer group border-0 shadow-md">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between mb-3">
+            <Card key={project.id} className={styles.projectCard}>
+              <CardHeader className={styles.projectHeader}>
+                <div className={styles.projectTitleContainer}>
                   {editingTitle === project.id ? (
                     <Input
                       value={editTitle}
                       onChange={(e) => setEditTitle(e.target.value)}
                       onBlur={handleTitleSave}
                       onKeyDown={handleTitleKeyPress}
-                      className="text-lg font-semibold"
+                      className={styles.projectTitle}
                       autoFocus
                     />
                   ) : (
                     <CardTitle 
-                      className="text-lg font-semibold text-gray-900 group-hover:text-red-600 transition-colors flex-1"
+                      className={styles.projectTitle}
                       onDoubleClick={() => handleTitleDoubleClick(project.id, project.title)}
                     >
                       {project.title}
                     </CardTitle>
                   )}
-                  <Badge className={`${project.statusColor} border-0 ml-2`}>
+                  <Badge className={`${project.statusColor} ${styles.projectStatus}`}>
                     {project.status}
                   </Badge>
                 </div>
               </CardHeader>
-              <CardContent className="pt-0">
-                <p className="text-gray-600 mb-4 leading-relaxed">
+              <CardContent className={styles.projectContent}>
+                <p className={styles.projectDescription}>
                   {project.description}
                 </p>
                 
-                {/* Bottom row with conditional display */}
-                <div className="flex items-center justify-between">
-                  {/* Default state: show modification time and category */}
-                  <div className="flex items-center justify-between w-full group-hover:hidden">
-                    <span className="text-xs text-gray-500">
+                <div className={styles.projectFooter}>
+                  <div className={styles.projectInfo}>
+                    <span className={styles.projectLastModified}>
                       最后修改: {project.lastModified}
                     </span>
-                    <Badge variant="outline" className="text-gray-600 border-gray-300">
+                    <Badge variant="outline" className={styles.projectCategory}>
                       {project.category}
                     </Badge>
                   </div>
                   
-                  {/* Hover state: show action buttons */}
-                  <div className="hidden group-hover:flex items-center justify-end w-full space-x-1">
+                  <div className={styles.projectActions}>
                     <Link to={`/editor/${project.id}`}>
-                      <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-gray-500 hover:text-red-600 hover:bg-red-50">
+                      <Button size="sm" variant="ghost" className={`${styles.actionButton} ${styles.editButton}`}>
                         <Edit3 size={14} />
                       </Button>
                     </Link>
-                    <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-gray-500 hover:text-green-600 hover:bg-green-50">
+                    <Button size="sm" variant="ghost" className={`${styles.actionButton} ${styles.copyButton}`}>
                       <Copy size={14} />
                     </Button>
                     <Button 
                       size="sm" 
                       variant="ghost" 
-                      className="h-8 w-8 p-0 text-gray-500 hover:text-red-600 hover:bg-red-50"
+                      className={`${styles.actionButton} ${styles.deleteButton}`}
                       onClick={(e) => {
                         e.preventDefault();
                         handleDeleteProject(project.id);

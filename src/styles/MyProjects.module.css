@@ -1,0 +1,131 @@
+.container {
+  @apply min-h-screen bg-gray-50;
+}
+
+.main {
+  @apply max-w-7xl mx-auto px-6 py-8;
+}
+
+.searchContainer {
+  @apply mb-8;
+}
+
+.searchWrapper {
+  @apply relative mb-6;
+}
+
+.searchIcon {
+  @apply absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400;
+}
+
+.searchInput {
+  @apply pl-10 py-3 text-lg border-gray-200 focus:border-red-500;
+}
+
+.filtersContainer {
+  @apply flex items-center justify-between;
+}
+
+.filtersLabel {
+  @apply text-sm font-medium text-gray-700;
+}
+
+.filtersList {
+  @apply flex flex-wrap gap-2;
+}
+
+.filterButton {
+  @apply transition-colors;
+}
+
+.filterButtonActive {
+  @apply bg-red-500 hover:bg-red-600 text-white;
+}
+
+.filterButtonInactive {
+  @apply border-gray-300 text-gray-700 hover:bg-gray-50;
+}
+
+.actionsContainer {
+  @apply flex space-x-3;
+}
+
+.projectsGrid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+}
+
+.projectCard {
+  @apply hover:shadow-lg transition-all duration-200 cursor-pointer border-0 shadow-md;
+}
+
+.projectHeader {
+  @apply pb-3;
+}
+
+.projectTitleContainer {
+  @apply flex items-center justify-between mb-3;
+}
+
+.projectTitle {
+  @apply text-base font-semibold text-gray-900 transition-colors flex-1;
+}
+
+.projectCard:hover .projectTitle {
+  @apply text-red-600;
+}
+
+.projectStatus {
+  @apply border-0 ml-2;
+}
+
+.projectContent {
+  @apply pt-0;
+}
+
+.projectDescription {
+  @apply text-gray-600 mb-4 leading-relaxed;
+}
+
+.projectFooter {
+  @apply flex items-center justify-between;
+}
+
+.projectInfo {
+  @apply flex items-center justify-between w-full;
+}
+
+.projectCard:hover .projectInfo {
+  @apply hidden;
+}
+
+.projectLastModified {
+  @apply text-xs text-gray-500;
+}
+
+.projectCategory {
+  @apply text-gray-600 border-gray-300;
+}
+
+.projectActions {
+  @apply hidden items-center justify-end w-full space-x-1;
+}
+
+.projectCard:hover .projectActions {
+  @apply flex;
+}
+
+.actionButton {
+  @apply h-8 w-8 p-0 text-gray-500;
+}
+
+.editButton {
+  @apply hover:text-red-600 hover:bg-red-50;
+}
+
+.copyButton {
+  @apply hover:text-green-600 hover:bg-green-50;
+}
+
+.deleteButton {
+  @apply hover:text-red-600 hover:bg-red-50;
+} 

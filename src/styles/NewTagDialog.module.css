@@ -1,0 +1,23 @@
+.triggerButton {
+  @apply border-dashed border-gray-300 text-gray-500;
+}
+
+.dialogContent {
+  @apply sm:max-w-[425px];
+}
+
+.formContainer {
+  @apply space-y-4 py-4;
+}
+
+.inputGroup {
+  @apply space-y-2;
+}
+
+.label {
+  @apply text-sm font-medium;
+}
+
+.buttonContainer {
+  @apply flex justify-end space-x-2;
+} 

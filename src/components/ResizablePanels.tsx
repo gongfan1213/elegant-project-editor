@@ -1,5 +1,5 @@
-
 import { useState, useRef, useCallback, useEffect } from "react";
+import styles from "@/styles/ResizablePanels.module.css";
 
 interface ResizablePanelsProps {
   leftPanel: React.ReactNode;
@@ -61,26 +61,26 @@ const ResizablePanels = ({ leftPanel, centerPanel, rightPanel }: ResizablePanels
   const centerWidth = 100 - leftWidth - rightWidth;
 
   return (
-    <div ref={containerRef} className="flex h-full">
-      <div style={{ width: `${leftWidth}%` }} className="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div ref={containerRef} className={styles.container}>
+      <div style={{ width: `${leftWidth}%` }} className={styles.leftPanel}>
         {leftPanel}
       </div>
       
       <div 
-        className="w-1 bg-gray-200 hover:bg-gray-300 cursor-col-resize transition-colors"
+        className={styles.resizeHandle}
         onMouseDown={handleLeftMouseDown}
       />
       
-      <div style={{ width: `${centerWidth}%` }} className="bg-white rounded-lg shadow-sm border border-gray-200 mx-1">
+      <div style={{ width: `${centerWidth}%` }} className={styles.centerPanel}>
         {centerPanel}
       </div>
       
       <div 
-        className="w-1 bg-gray-200 hover:bg-gray-300 cursor-col-resize transition-colors"
+        className={styles.resizeHandle}
         onMouseDown={handleRightMouseDown}
       />
       
-      <div style={{ width: `${rightWidth}%` }} className="bg-white rounded-lg shadow-sm border border-gray-200">
+      <div style={{ width: `${rightWidth}%` }} className={styles.rightPanel}>
         {rightPanel}
       </div>
     </div>

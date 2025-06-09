@@ -1,9 +1,9 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Link } from "lucide-react";
+import styles from "@/styles/ImportUrlDialog.module.css";
 
 interface ImportUrlDialogProps {
   onImport: (title: string, content: string) => void;
@@ -27,18 +27,18 @@ const ImportUrlDialog = ({ onImport }: ImportUrlDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" variant="outline" className="text-xs">
-          <Link size={12} className="mr-1" />
+        <Button size="sm" variant="outline" className={styles.triggerButton}>
+          <Link size={12} className={styles.linkIcon} />
           导入URL
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className={styles.dialogContent}>
         <DialogHeader>
           <DialogTitle>导入小红书内容</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4 py-4">
-          <div className="space-y-2">
-            <label htmlFor="url" className="text-sm font-medium">
+        <div className={styles.formContainer}>
+          <div className={styles.inputGroup}>
+            <label htmlFor="url" className={styles.label}>
               小红书链接
             </label>
             <Input
@@ -49,7 +49,7 @@ const ImportUrlDialog = ({ onImport }: ImportUrlDialogProps) => {
             />
           </div>
         </div>
-        <div className="flex justify-end space-x-2">
+        <div className={styles.buttonContainer}>
           <Button variant="outline" onClick={() => setOpen(false)}>
             取消
           </Button>

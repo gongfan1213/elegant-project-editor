@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus } from "lucide-react";
+import styles from "@/styles/NewProjectDialog.module.css";
 
 interface NewProjectDialogProps {
   onAddProject: (title: string, description: string, category: string) => void;
@@ -45,18 +45,18 @@ const NewProjectDialog = ({ onAddProject, availableTags, onAddTag }: NewProjectD
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-red-500 hover:bg-red-600 text-white">
-          <Plus size={16} className="mr-2" />
+        <Button className={styles.triggerButton}>
+          <Plus size={16} className={styles.plusIcon} />
           新增项目
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className={styles.dialogContent}>
         <DialogHeader>
           <DialogTitle>新增项目</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4 py-4">
-          <div className="space-y-2">
-            <label htmlFor="title" className="text-sm font-medium">
+        <div className={styles.formContainer}>
+          <div className={styles.inputGroup}>
+            <label htmlFor="title" className={styles.label}>
               项目标题
             </label>
             <Input
@@ -66,8 +66,8 @@ const NewProjectDialog = ({ onAddProject, availableTags, onAddTag }: NewProjectD
               placeholder="请输入项目标题"
             />
           </div>
-          <div className="space-y-2">
-            <label htmlFor="description" className="text-sm font-medium">
+          <div className={styles.inputGroup}>
+            <label htmlFor="description" className={styles.label}>
               项目描述
             </label>
             <Textarea
@@ -78,12 +78,12 @@ const NewProjectDialog = ({ onAddProject, availableTags, onAddTag }: NewProjectD
               rows={3}
             />
           </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium">
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>
               标签选择
             </label>
             {!showNewTagInput ? (
-              <div className="space-y-2">
+              <div className={styles.tagSelectContainer}>
                 <Select value={category} onValueChange={setCategory}>
                   <SelectTrigger>
                     <SelectValue placeholder="选择标签" />
@@ -101,13 +101,13 @@ const NewProjectDialog = ({ onAddProject, availableTags, onAddTag }: NewProjectD
                   variant="outline" 
                   size="sm" 
                   onClick={() => setShowNewTagInput(true)}
-                  className="w-full border-dashed"
+                  className={styles.newTagButton}
                 >
                   + 创建新标签
                 </Button>
               </div>
             ) : (
-              <div className="flex space-x-2">
+              <div className={styles.newTagInputContainer}>
                 <Input
                   value={newTagName}
                   onChange={(e) => setNewTagName(e.target.value)}
@@ -131,7 +131,7 @@ const NewProjectDialog = ({ onAddProject, availableTags, onAddTag }: NewProjectD
             )}
           </div>
         </div>
-        <div className="flex justify-end space-x-2">
+        <div className={styles.buttonContainer}>
           <Button variant="outline" onClick={() => setOpen(false)}>
             取消
           </Button>

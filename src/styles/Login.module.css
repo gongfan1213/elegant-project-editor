@@ -1,0 +1,63 @@
+.container {
+  @apply min-h-screen bg-gray-50 flex items-center justify-center p-4;
+}
+
+.card {
+  @apply w-full max-w-md;
+}
+
+.cardHeader {
+  @apply text-center;
+}
+
+.logoContainer {
+  @apply flex justify-center mb-4;
+}
+
+.logo {
+  @apply w-12 h-12 bg-primary rounded-lg flex items-center justify-center;
+}
+
+.logoText {
+  @apply text-primary-foreground font-bold text-lg;
+}
+
+.title {
+  @apply text-2xl font-bold text-gray-900;
+}
+
+.subtitle {
+  @apply text-gray-600 mt-2;
+}
+
+.form {
+  @apply space-y-4;
+}
+
+.formGroup {
+  @apply space-y-2;
+}
+
+.submitButton {
+  @apply w-full bg-primary hover:bg-primary/90 text-primary-foreground;
+}
+
+.switchContainer {
+  @apply mt-6 text-center;
+}
+
+.switchText {
+  @apply text-gray-600;
+}
+
+.switchButton {
+  @apply p-0 ml-1 text-primary hover:text-primary/80;
+}
+
+.backContainer {
+  @apply mt-4 text-center;
+}
+
+.backButton {
+  @apply text-gray-600 hover:text-gray-900;
+} 

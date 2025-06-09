@@ -1,0 +1,51 @@
+.triggerButton {
+  @apply border-gray-300 text-gray-700;
+}
+
+.dialogContent {
+  @apply sm:max-w-[600px];
+}
+
+.contentContainer {
+  @apply space-y-4;
+}
+
+.headerActions {
+  @apply flex items-center justify-between;
+}
+
+.selectAllGroup {
+  @apply flex items-center space-x-2;
+}
+
+.selectAllText {
+  @apply text-sm;
+}
+
+.deleteButton {
+  @apply mr-1;
+}
+
+.projectList {
+  @apply max-h-[300px] overflow-y-auto space-y-2;
+}
+
+.projectItem {
+  @apply flex items-center space-x-3 p-3 border rounded-lg;
+}
+
+.projectInfo {
+  @apply flex-1;
+}
+
+.projectTitle {
+  @apply font-medium text-sm;
+}
+
+.projectDescription {
+  @apply text-xs text-gray-500 line-clamp-1;
+}
+
+.projectDate {
+  @apply text-xs text-gray-400;
+} 

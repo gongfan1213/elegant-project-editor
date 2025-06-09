@@ -1,0 +1,56 @@
+.header {
+  @apply bg-white border-b border-gray-200 px-6 py-0;
+}
+
+.container {
+  @apply flex items-center justify-between max-w-7xl mx-auto;
+}
+
+.spacer {
+  @apply flex-1;
+}
+
+.nav {
+  @apply flex items-center space-x-8;
+}
+
+.navButton {
+  @apply relative px-4 py-8 text-gray-700 hover:text-gray-900 bg-transparent hover:bg-transparent;
+}
+
+.navButton::after {
+  content: '';
+  @apply absolute bottom-0 left-0 w-full h-0.5 transition-all duration-300;
+}
+
+.navButtonActive {
+  @apply text-gray-900;
+}
+
+.navButtonActive::after {
+  @apply bg-red-500 opacity-100;
+}
+
+.navButtonInactive::after {
+  @apply bg-red-300 opacity-0;
+}
+
+.navButtonInactive:hover::after {
+  @apply opacity-100;
+}
+
+.logoContainer {
+  @apply flex items-center ml-8;
+}
+
+.logoLink {
+  @apply flex items-center space-x-2;
+}
+
+.logo {
+  @apply w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center;
+}
+
+.logoText {
+  @apply text-white font-bold text-sm;
+} 

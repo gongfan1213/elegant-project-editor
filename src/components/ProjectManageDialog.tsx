@@ -1,9 +1,9 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Trash2 } from "lucide-react";
+import styles from "@/styles/ProjectManageDialog.module.css";
 
 interface Project {
   id: string;
@@ -50,22 +50,22 @@ const ProjectManageDialog = ({ projects, onDeleteProjects }: ProjectManageDialog
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="border-gray-300 text-gray-700">
+        <Button variant="outline" className={styles.triggerButton}>
           管理项目
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className={styles.dialogContent}>
         <DialogHeader>
           <DialogTitle>项目管理</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
+        <div className={styles.contentContainer}>
+          <div className={styles.headerActions}>
+            <div className={styles.selectAllGroup}>
               <Checkbox
                 checked={selectedProjects.length === projects.length && projects.length > 0}
                 onCheckedChange={handleSelectAll}
               />
-              <span className="text-sm">全选</span>
+              <span className={styles.selectAllText}>全选</span>
             </div>
             <Button 
               variant="destructive" 
@@ -73,23 +73,23 @@ const ProjectManageDialog = ({ projects, onDeleteProjects }: ProjectManageDialog
               disabled={selectedProjects.length === 0}
               onClick={handleDelete}
             >
-              <Trash2 size={14} className="mr-1" />
+              <Trash2 size={14} className={styles.deleteButton} />
               删除选中 ({selectedProjects.length})
             </Button>
           </div>
           
-          <div className="max-h-[300px] overflow-y-auto space-y-2">
+          <div className={styles.projectList}>
             {projects.map((project) => (
-              <div key={project.id} className="flex items-center space-x-3 p-3 border rounded-lg">
+              <div key={project.id} className={styles.projectItem}>
                 <Checkbox
                   checked={selectedProjects.includes(project.id)}
                   onCheckedChange={() => handleSelectProject(project.id)}
                 />
-                <div className="flex-1">
-                  <h4 className="font-medium text-sm">{project.title}</h4>
-                  <p className="text-xs text-gray-500 line-clamp-1">{project.description}</p>
+                <div className={styles.projectInfo}>
+                  <h4 className={styles.projectTitle}>{project.title}</h4>
+                  <p className={styles.projectDescription}>{project.description}</p>
                 </div>
-                <span className="text-xs text-gray-400">{project.lastModified}</span>
+                <span className={styles.projectDate}>{project.lastModified}</span>
               </div>
             ))}
           </div>

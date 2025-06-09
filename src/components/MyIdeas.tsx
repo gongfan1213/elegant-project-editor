@@ -1,9 +1,9 @@
-
 import { useState } from "react";
 import { Copy, Trash2, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import styles from "@/styles/MyIdeas.module.css";
 
 interface MyIdeasProps {
   onSelectIdea: (idea: string) => void;
@@ -53,34 +53,32 @@ const MyIdeas = ({ onSelectIdea, onBackToDrafts }: MyIdeasProps) => {
   };
 
   return (
-    <div className="p-4 h-full flex flex-col">
-      {/* Header with back button */}
-      <div className="flex items-center mb-4">
+    <div className={styles.container}>
+      <div className={styles.header}>
         {onBackToDrafts && (
           <Button
             variant="ghost"
             size="sm"
             onClick={onBackToDrafts}
-            className="text-gray-600 hover:text-gray-900 mr-3 h-8 w-8 p-0"
+            className={styles.backButton}
           >
             <ArrowLeft size={16} />
           </Button>
         )}
-        <h3 className="font-semibold text-gray-900">我的想法</h3>
+        <h3 className={styles.title}>我的想法</h3>
       </div>
 
-      {/* Expanded input area - takes up 3/4 of the space */}
-      <div className="mb-6 flex-[3]">
-        <div className="space-y-3 h-full flex flex-col">
+      <div className={styles.inputSection}>
+        <div className={styles.inputContainer}>
           <Textarea
             value={newIdea}
             onChange={(e) => setNewIdea(e.target.value)}
             placeholder="记录你的创作想法..."
-            className="resize-none flex-1 min-h-[200px]"
+            className={styles.textarea}
           />
           <Button 
             onClick={handleSaveIdea}
-            className="w-full bg-red-500 hover:bg-red-600 text-white"
+            className={styles.saveButton}
             disabled={!newIdea.trim()}
           >
             保存想法
@@ -88,18 +86,17 @@ const MyIdeas = ({ onSelectIdea, onBackToDrafts }: MyIdeasProps) => {
         </div>
       </div>
 
-      {/* Previous notes section - takes up remaining 1/4 with scroll */}
-      <div className="flex-1 overflow-y-auto space-y-3">
-        <h4 className="text-sm font-semibold text-gray-700 mb-2">历史想法</h4>
+      <div className={styles.historySection}>
+        <h4 className={styles.historyTitle}>历史想法</h4>
         {ideas.map((idea) => (
-          <Card key={idea.id} className="cursor-pointer hover:shadow-md transition-shadow border-0 shadow-sm group">
-            <CardContent className="p-3">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Card key={idea.id} className={styles.ideaCard}>
+            <CardContent className={styles.cardContent}>
+              <div className={styles.actionButtons}>
+                <div className={styles.buttonGroup}>
                   <Button 
                     size="sm" 
                     variant="ghost" 
-                    className="h-6 w-6 p-0"
+                    className={styles.actionButton}
                     onClick={() => handleCopyIdea(idea.content)}
                   >
                     <Copy size={12} />
@@ -107,7 +104,7 @@ const MyIdeas = ({ onSelectIdea, onBackToDrafts }: MyIdeasProps) => {
                   <Button 
                     size="sm" 
                     variant="ghost" 
-                    className="h-6 w-6 p-0"
+                    className={styles.actionButton}
                     onClick={() => handleDeleteIdea(idea.id)}
                   >
                     <Trash2 size={12} />
@@ -115,12 +112,12 @@ const MyIdeas = ({ onSelectIdea, onBackToDrafts }: MyIdeasProps) => {
                 </div>
               </div>
               <p 
-                className="text-sm text-gray-700 line-clamp-3 mb-2 cursor-pointer"
+                className={styles.ideaContent}
                 onClick={() => onSelectIdea(idea.content)}
               >
                 {idea.content}
               </p>
-              <span className="text-xs text-gray-400">{idea.time}</span>
+              <span className={styles.ideaTime}>{idea.time}</span>
             </CardContent>
           </Card>
         ))}

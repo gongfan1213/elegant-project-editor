@@ -1,8 +1,8 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import styles from "@/styles/NewTagDialog.module.css";
 
 interface NewTagDialogProps {
   onAddTag: (tag: string) => void;
@@ -23,17 +23,17 @@ const NewTagDialog = ({ onAddTag }: NewTagDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="border-dashed border-gray-300 text-gray-500">
+        <Button variant="outline" size="sm" className={styles.triggerButton}>
           + 新增标签
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className={styles.dialogContent}>
         <DialogHeader>
           <DialogTitle>新增标签</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4 py-4">
-          <div className="space-y-2">
-            <label htmlFor="tagName" className="text-sm font-medium">
+        <div className={styles.formContainer}>
+          <div className={styles.inputGroup}>
+            <label htmlFor="tagName" className={styles.label}>
               标签名称
             </label>
             <Input
@@ -45,7 +45,7 @@ const NewTagDialog = ({ onAddTag }: NewTagDialogProps) => {
             />
           </div>
         </div>
-        <div className="flex justify-end space-x-2">
+        <div className={styles.buttonContainer}>
           <Button variant="outline" onClick={() => setOpen(false)}>
             取消
           </Button>
