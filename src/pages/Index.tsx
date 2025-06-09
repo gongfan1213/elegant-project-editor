@@ -94,7 +94,7 @@ const Index = () => {
             用Nova创作精彩内容
           </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {projects.map((project, index) => (
               <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer border-0 shadow-md">
                 <CardHeader>
